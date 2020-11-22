@@ -30,9 +30,7 @@ const boardSchema = new Schema({
     required: true,
     trim: true,
     type: String
-  },
-  // sockets is an array of socketIds that keeps track of users currently on this board's page
-  sockets: [String],
+  }
 });
 
 boardSchema.index({ name: 'text' });

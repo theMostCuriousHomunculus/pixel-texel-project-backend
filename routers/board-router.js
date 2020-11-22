@@ -7,10 +7,7 @@ const authorized = require('../middleware/authorized');
 const {
   createBoard,
   deleteBoard,
-  // joinBoard,
-  // leaveBoard,
-  readAllBoards,
-  // sendMessage
+  readAllBoards
 } = require('../controllers/board-controller');
 const { Board, Message } = require('../models/board-model');
 const { User } = require('../models/user-model');
@@ -32,8 +29,6 @@ const routerWithSocketIO = function (io) {
     socket.on('join', async function (boardId) {
       try {
         const board = await Board.findById(boardId).populate({ path: 'messages.author', select: 'name' }).populate({ path: 'founder', select: 'name' });
-        board.sockets.push(socket.id);
-        await board.save();
         socket.join(boardId);
         socket.emit('admitted', {
           founder: board.founder,
@@ -71,16 +66,6 @@ const routerWithSocketIO = function (io) {
           body: messageText,
           createdAt: new Date()
         });
-      } catch (error) {
-        socket.emit('error', { message: error.message });
-      }
-    });
-
-    socket.on('leave', async function (boardId) {
-      try {
-        const board = await Board.findById(boardId);
-        board.sockets = board.sockets.filter(socketId => socketId != socket.id);
-        await board.save();
       } catch (error) {
         socket.emit('error', { message: error.message });
       }
