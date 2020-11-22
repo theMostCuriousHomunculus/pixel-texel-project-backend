@@ -14,3 +14,5 @@ router.patch('/login', login);
 router.patch('/logout', authorized, logout);
 
 router.post('/', register);
+
+module.exports = router;
